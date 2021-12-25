@@ -12,6 +12,6 @@ func init() {
 
 func main() {
 	if err := server.Run(); err != nil {
-		log.Printf("action=main, status=error, %v", err)
+		log.Fatal(err)
 	}
 }
