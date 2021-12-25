@@ -30,7 +30,7 @@ steps:
       - GCP_PROJECT=$_GCP_PROJECT
 substitutions:
   _REGION: asia-northeast1
-  _SERVICE_NAME: torasemi-todo-api
-  _GCP_PROJECT: torasemi-todo-api
+  _SERVICE_NAME: ''
+  _GCP_PROJECT: '''
 images:
   - gcr.io/$PROJECT_ID/${_SERVICE_NAME}:latest
