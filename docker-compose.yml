@@ -9,3 +9,22 @@ services:
       - .:/app
     ports:
       - "8080:8080"
+    links:
+      - db
+  db:
+    image: mysql:8.0
+    environment:
+      - MYSQL_DATABASE=${DB_DATABASE}
+      - MYSQL_USER=${DB_USERNAME}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+      - TZ=Asia/Tokyo
+    volumes:
+      - db:/var/lib/mysql
+      - ./logs:/var/log/mysql
+      - ./deployments/mysql/my.cnf:/etc/mysql/local/conf.d/my.cnf
+    ports:
+      - "3306:3306"
+volumes:
+  db:
+    driver: local
