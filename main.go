@@ -1,7 +1,17 @@
 package main
 
-import "fmt"
+import (
+	"log"
+
+	"github.com/y-mabuchi/torasemi-todo-api/pkg/server"
+)
+
+func init() {
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
+}
 
 func main() {
-	fmt.Print("hello")
+	if err := server.Run(); err != nil {
+		log.Printf("action=main, status=error, %v", err)
+	}
 }
