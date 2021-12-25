@@ -1,0 +1,11 @@
+version: '3.7'
+services:
+  app:
+    build:
+      context: "./deployments/dev"
+    command: "air -c .air.toml"
+    tty: true
+    volumes:
+      - .:/app
+    ports:
+      - "8080:8080"
