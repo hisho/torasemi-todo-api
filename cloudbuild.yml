@@ -28,9 +28,21 @@ steps:
       - --allow-unauthenticated
       - --update-env-vars
       - GCP_PROJECT=$_GCP_PROJECT
+      - --update-env-vars
+      - CLOUD_SQL_CONNECTION_NAME=$_CLOUD_SQL_CONNECTION_NAME
+      - --update-env-vars
+      - DB_USERNAME=$_DB_USERNAME
+      - --update-env-vars
+      - DB_PASSWORD=$_DB_PASSWORD
+      - --update-env-vars
+      - DB_DATABASE=$_DB_DATABASE
 substitutions:
   _REGION: asia-northeast1
   _SERVICE_NAME: ''
   _GCP_PROJECT: ''
+  _CLOUD_SQL_CONNECTION_NAME: ''
+  _DB_USERNAME: ''
+  _DB_PASSWORD: ''
+  _DB_DATABASE: ''
 images:
   - gcr.io/$PROJECT_ID/${_SERVICE_NAME}:latest
