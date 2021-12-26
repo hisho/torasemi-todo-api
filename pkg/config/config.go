@@ -7,11 +7,15 @@ import (
 )
 
 type Config struct {
-	DBHost string `envconfig:"DB_HOST" default:"127.0.0.1"`
+	DBConfig
+}
+
+type DBConfig struct {
+	DBHost string `envconfig:"DB_HOST" default:"db"`
 	DBPort string `envconfig:"DB_PORT" default:"3306"`
-	DBUser string `envconfig:"DB_USER" default:"torasemi"`
-	DBPass string `envconfig:"DB_PASS" default:"PR85UafO"`
-	DBName string `envconfig:"DB_NAME" default:"torasemi-todo-api-local"`
+	DBUser string `envconfig:"DB_USERNAME" default:"torasemi"`
+	DBPass string `envconfig:"DB_PASSWORD" default:"PR85UafO"`
+	DBName string `envconfig:"DB_DATABASE" default:"torasemi-todo-api-local"`
 }
 
 func NewConfigFromEnv() Config {
