@@ -7,6 +7,11 @@ RUN_SERVICE := torasemi-todo-api
 dev:
 	docker compose up
 
+.PHONY: migrate
+migrate:
+	docker compose exec app go run cmd/migration/main.go
+
+# build
 build:
 	gcloud builds submit --tag gcr.io/$(GCP_PROJECT)/$(RUN_SERVICE)
 
