@@ -11,6 +11,9 @@ dev:
 migrate:
 	docker compose exec app go run cmd/migration/main.go
 
+sqlboiler:
+	sqlboiler mysql
+
 # build
 build:
 	gcloud builds submit --tag gcr.io/$(GCP_PROJECT)/$(RUN_SERVICE)

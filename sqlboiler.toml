@@ -1,0 +1,21 @@
+# ref https://github.com/volatiletech/sqlboiler#generic-config-options
+# 各自のローカルで実行する運用にしている
+# Makefileの install-sqlboiler でinstallして
+# sqlboiler mysqlでコード生成する
+pkgname  = "rds"
+output   = "pkg/repository/rds"
+wipe     = true
+no-tests = true
+
+[mysql]
+dbname = "torasemi-todo-api-local"
+host   = "127.0.0.1"
+port   = 3306
+user   = "torasemi"
+pass   = "PR85UafO"
+sslmode = "false"
+blacklist = []
+whitelist = [
+    "users",
+    "todos",
+]
