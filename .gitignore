@@ -21,6 +21,12 @@
 # Dependency directories (remove the comment below to include it)
 # vendor/
 
+# logs
+logs/
+
+# temp
+tmp/
+
 ### macOS template
 # General
 .DS_Store
