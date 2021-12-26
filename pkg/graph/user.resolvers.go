@@ -12,6 +12,7 @@ import (
 )
 
 func (r *queryResolver) AllUsers(ctx context.Context) ([]*model.User, error) {
+	// TODO: implement
 	panic(fmt.Errorf("not implemented"))
 }
 
