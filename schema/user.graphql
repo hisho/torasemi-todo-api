@@ -1,0 +1,10 @@
+type Query {
+  allUsers: [User]!
+}
+
+type User {
+    id: ID!
+    name: String!
+    created_at: Time!
+    updated_at: Time!
+}

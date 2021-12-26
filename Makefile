@@ -14,6 +14,9 @@ migrate:
 sqlboiler:
 	sqlboiler mysql
 
+gqlgen:
+	go run cmd/gqlgen/main.go
+
 # build
 build:
 	gcloud builds submit --tag gcr.io/$(GCP_PROJECT)/$(RUN_SERVICE)
