@@ -1,9 +1,19 @@
 package server
 
 import (
-	"fmt"
 	"log"
 	"net/http"
+
+	"github.com/99designs/gqlgen/graphql/playground"
+
+	"github.com/go-chi/chi"
+
+	"github.com/y-mabuchi/torasemi-todo-api/pkg/graph/generated"
+
+	"github.com/99designs/gqlgen/graphql/handler"
+
+	"github.com/y-mabuchi/torasemi-todo-api/pkg/graph"
+	"github.com/y-mabuchi/torasemi-todo-api/pkg/repository"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/y-mabuchi/torasemi-todo-api/pkg/config"
@@ -11,23 +21,23 @@ import (
 )
 
 func Run() error {
+	router := chi.NewRouter()
+
 	conf := config.NewConfigFromEnv()
 	db := infrastructure.NewDB(conf.DBConfig)
 	defer db.Close()
-	if err := db.Ping(); err != nil {
-		log.Printf("action=db.Ping, status=error: %v", err)
-	}
 
-	http.HandleFunc("/", helloHandler)
+	repo := repository.NewRepository(db)
+	resolver := graph.NewResolver(repo)
+	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: resolver}))
+
+	router.Handle("/", playground.Handler("GraphQL Playground", "/api/query"))
+	router.Handle("/api/query", srv)
 
 	log.Print("listen http://localhost:8080")
-	if err := http.ListenAndServe(":8080", nil); err != nil {
+	if err := http.ListenAndServe(":8080", router); err != nil {
 		log.Fatal(err)
 	}
 
 	return nil
-}
-
-func helloHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "hello")
 }
