@@ -1,0 +1,24 @@
+# Where are all the schema files located? globs are supported eg  src/**/*.graphqls
+schema:
+  - schema/*.graphql
+exec:
+  filename: pkg/graph/generated/generated.go
+  package: generated
+model:
+  filename: pkg/graph/model/models_gen.go
+  package: model
+resolver:
+  type: Resolver
+  layout: follow-schema
+  dir: pkg/graph
+  package: graph
+autobind:
+  - "github.com/y-mabuchi/torasemi-todo-api/pkg/graph/model"
+models:
+  ID:
+    model:
+      - github.com/99designs/gqlgen/graphql.Int64
+  Int:
+    model:
+      - github.com/99designs/gqlgen/graphql.Int64
+omit_slice_element_pointers: true
