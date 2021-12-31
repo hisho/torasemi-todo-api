@@ -5,18 +5,52 @@ package graph
 
 import (
 	"context"
-	"fmt"
+	"log"
 
 	"github.com/y-mabuchi/torasemi-todo-api/pkg/graph/generated"
 	"github.com/y-mabuchi/torasemi-todo-api/pkg/graph/model"
 )
 
-func (r *queryResolver) AllUsers(ctx context.Context) ([]*model.User, error) {
-	// TODO: implement
-	panic(fmt.Errorf("not implemented"))
+func (r *mutationResolver) CreateUser(ctx context.Context, input *model.CreateUserInput) (*model.User, error) {
+	user, err := r.repo.CreateUser(ctx, input)
+	if err != nil {
+		log.Printf("action=r.repo.CreateUser, status=error: %v", err)
+		return nil, err
+	}
+
+	return &model.User{User: user}, nil
 }
+
+func (r *queryResolver) AllUsers(ctx context.Context) ([]*model.User, error) {
+	data, err := r.repo.AllUsers(ctx)
+	if err != nil {
+		log.Printf("action=r.repo.AllUsers, status=error: %v", err)
+		return nil, err
+	}
+
+	var users []*model.User
+	for _, d := range data {
+		users = append(users, &model.User{User: d})
+	}
+
+	return users, nil
+}
+
+func (r *queryResolver) User(ctx context.Context, id int) (*model.User, error) {
+	user, err := r.repo.User(ctx, id)
+	if err != nil {
+		log.Printf("action=r.repo.User, status=error: %v", err)
+		return nil, err
+	}
+
+	return &model.User{User: user}, err
+}
+
+// Mutation returns generated.MutationResolver implementation.
+func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
 
 // Query returns generated.QueryResolver implementation.
 func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
 
+type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
