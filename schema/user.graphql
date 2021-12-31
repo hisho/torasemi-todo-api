@@ -1,5 +1,6 @@
 type Query {
-  allUsers: [User]!
+    allUsers: [User]!
+    user(id: ID): User!
 }
 
 type User {

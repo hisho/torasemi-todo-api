@@ -5,6 +5,7 @@ package graph
 
 import (
 	"context"
+	"fmt"
 	"log"
 
 	"github.com/y-mabuchi/torasemi-todo-api/pkg/graph/generated"
@@ -20,16 +21,14 @@ func (r *queryResolver) AllUsers(ctx context.Context) ([]*model.User, error) {
 
 	var users []*model.User
 	for _, d := range data {
-		user := &model.User{
-			ID:        int64(d.ID),
-			Name:      d.Name,
-			CreatedAt: d.CreatedAt,
-			UpdatedAt: d.UpdatedAt,
-		}
-		users = append(users, user)
+		users = append(users, &model.User{User: d})
 	}
 
 	return users, nil
+}
+
+func (r *queryResolver) User(ctx context.Context, id *int) (*model.User, error) {
+	panic(fmt.Errorf("not implemented"))
 }
 
 // Query returns generated.QueryResolver implementation.
