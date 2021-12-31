@@ -45,7 +45,7 @@ type DirectiveRoot struct {
 type ComplexityRoot struct {
 	Query struct {
 		AllUsers func(childComplexity int) int
-		User     func(childComplexity int, id *int) int
+		User     func(childComplexity int, id int) int
 	}
 
 	User struct {
@@ -58,7 +58,7 @@ type ComplexityRoot struct {
 
 type QueryResolver interface {
 	AllUsers(ctx context.Context) ([]*model.User, error)
-	User(ctx context.Context, id *int) (*model.User, error)
+	User(ctx context.Context, id int) (*model.User, error)
 }
 
 type executableSchema struct {
@@ -93,7 +93,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.User(childComplexity, args["id"].(*int)), true
+		return e.complexity.Query.User(childComplexity, args["id"].(int)), true
 
 	case "User.created_at":
 		if e.complexity.User.CreatedAt == nil {
@@ -176,7 +176,7 @@ var sources = []*ast.Source{
 	{Name: "schema/base.graphql", Input: `scalar Time`, BuiltIn: false},
 	{Name: "schema/user.graphql", Input: `type Query {
     allUsers: [User]!
-    user(id: ID): User!
+    user(id: ID!): User!
 }
 
 type User {
@@ -211,10 +211,10 @@ func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs
 func (ec *executionContext) field_Query_user_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 *int
+	var arg0 int
 	if tmp, ok := rawArgs["id"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalOID2ᚖint(ctx, tmp)
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -321,7 +321,7 @@ func (ec *executionContext) _Query_user(ctx context.Context, field graphql.Colle
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().User(rctx, args["id"].(*int))
+		return ec.resolvers.Query().User(rctx, args["id"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2420,21 +2420,6 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 		return graphql.Null
 	}
 	return graphql.MarshalBoolean(*v)
-}
-
-func (ec *executionContext) unmarshalOID2ᚖint(ctx context.Context, v interface{}) (*int, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := graphql.UnmarshalInt(v)
-	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalOID2ᚖint(ctx context.Context, sel ast.SelectionSet, v *int) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return graphql.MarshalInt(*v)
 }
 
 func (ec *executionContext) unmarshalOString2string(ctx context.Context, v interface{}) (string, error) {

@@ -5,7 +5,6 @@ package graph
 
 import (
 	"context"
-	"fmt"
 	"log"
 
 	"github.com/y-mabuchi/torasemi-todo-api/pkg/graph/generated"
@@ -27,8 +26,14 @@ func (r *queryResolver) AllUsers(ctx context.Context) ([]*model.User, error) {
 	return users, nil
 }
 
-func (r *queryResolver) User(ctx context.Context, id *int) (*model.User, error) {
-	panic(fmt.Errorf("not implemented"))
+func (r *queryResolver) User(ctx context.Context, id int) (*model.User, error) {
+	user, err := r.repo.User(ctx, id)
+	if err != nil {
+		log.Printf("action=r.repo.User, status=error: %v", err)
+		return nil, err
+	}
+
+	return &model.User{User: user}, err
 }
 
 // Query returns generated.QueryResolver implementation.
