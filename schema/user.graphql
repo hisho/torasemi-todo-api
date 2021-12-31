@@ -9,11 +9,11 @@ input CreateUserInput {
     name: String!
 }
 
-type Query {
+extend type Query {
     allUsers: [User]!
     user(id: ID!): User!
 }
 
-type Mutation {
+extend type Mutation {
     createUser(input: CreateUserInput): User!
 }

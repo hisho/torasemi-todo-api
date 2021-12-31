@@ -7,7 +7,6 @@ import (
 	"context"
 	"log"
 
-	"github.com/y-mabuchi/torasemi-todo-api/pkg/graph/generated"
 	"github.com/y-mabuchi/torasemi-todo-api/pkg/graph/model"
 )
 
@@ -45,12 +44,3 @@ func (r *queryResolver) User(ctx context.Context, id int) (*model.User, error) {
 
 	return &model.User{User: user}, err
 }
-
-// Mutation returns generated.MutationResolver implementation.
-func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
-
-// Query returns generated.QueryResolver implementation.
-func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
-
-type mutationResolver struct{ *Resolver }
-type queryResolver struct{ *Resolver }
