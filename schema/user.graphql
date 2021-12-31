@@ -1,11 +1,19 @@
-type Query {
-    allUsers: [User]!
-    user(id: ID!): User!
-}
-
 type User {
     id: ID!
     name: String!
     created_at: Time!
     updated_at: Time!
+}
+
+input CreateUserInput {
+    name: String!
+}
+
+type Query {
+    allUsers: [User]!
+    user(id: ID!): User!
+}
+
+type Mutation {
+    createUser(input: CreateUserInput): User!
 }

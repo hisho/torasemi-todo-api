@@ -3,6 +3,11 @@ package repository
 import (
 	"context"
 	"log"
+	"time"
+
+	"github.com/volatiletech/sqlboiler/v4/boil"
+
+	"github.com/y-mabuchi/torasemi-todo-api/pkg/graph/model"
 
 	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 
@@ -27,5 +32,20 @@ func (r Repository) User(ctx context.Context, id int) (*rds.User, error) {
 		log.Printf("action=rds.Users, status=error: %v", err)
 		return nil, err
 	}
+	return user, nil
+}
+
+func (r Repository) CreateUser(ctx context.Context, input *model.CreateUserInput) (*rds.User, error) {
+	user := &rds.User{
+		Name:      input.Name,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	}
+
+	if err := user.Insert(ctx, r.db, boil.Infer()); err != nil {
+		log.Printf("action=user.Insert, status=error: %v", err)
+		return nil, err
+	}
+
 	return user, nil
 }
