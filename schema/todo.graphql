@@ -6,7 +6,3 @@ type Todo {
     createdAt: Time!
     updatedAt: Time!
 }
-
-extend type Query {
-    allTodos: [Todo]!
-}

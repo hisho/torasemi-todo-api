@@ -5,21 +5,15 @@ package graph
 
 import (
 	"context"
-	"log"
-
+	"github.com/y-mabuchi/torasemi-todo-api/pkg/graph/generated"
 	"github.com/y-mabuchi/torasemi-todo-api/pkg/graph/model"
 )
 
-func (r *queryResolver) AllTodos(ctx context.Context) ([]*model.Todo, error) {
-	data, err := r.repo.AllTodos(ctx)
-	if err != nil {
-		log.Printf("action=r.repo.AllTodos, status=error: %v", err)
-		return nil, err
-	}
-	var todos []*model.Todo
-	for _, d := range data {
-		todos = append(todos, &model.Todo{Todo: d})
-	}
-
-	return todos, nil
+func (r *todoResolver) Todo(ctx context.Context, obj *model.Todo) (string, error) {
+	return obj.Todo.Todo, nil
 }
+
+// Todo returns generated.TodoResolver implementation.
+func (r *Resolver) Todo() generated.TodoResolver { return &todoResolver{r} }
+
+type todoResolver struct{ *Resolver }
