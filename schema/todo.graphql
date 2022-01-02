@@ -1,0 +1,8 @@
+type Todo {
+    id: ID!
+    todo: String!
+    finished: Boolean!
+    userId: ID!
+    createdAt: Time!
+    updatedAt: Time!
+}

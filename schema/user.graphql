@@ -8,12 +8,3 @@ type User {
 input CreateUserInput {
     name: String!
 }
-
-type Query {
-    allUsers: [User]!
-    user(id: ID!): User!
-}
-
-type Mutation {
-    createUser(input: CreateUserInput): User!
-}
