@@ -2,8 +2,11 @@ package repository
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"time"
+
+	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 
 	"github.com/volatiletech/sqlboiler/v4/boil"
 
@@ -105,4 +108,23 @@ func (r Repository) DeleteUser(ctx context.Context, input *model.DeleteUserInput
 	tx.Commit()
 
 	return user, nil
+}
+
+func (r Repository) Users(ctx context.Context, input *model.UserFilter) (rds.UserSlice, error) {
+	log.Print("action=repository.Users, status=start")
+	var mods []qm.QueryMod
+
+	if input != nil {
+		clause := fmt.Sprintf("%s LIKE ?", rds.UserColumns.Name)
+		args := "%" + *input.Name + "%"
+		mods = append(mods, qm.Where(clause, args))
+	}
+
+	users, err := rds.Users(mods...).All(ctx, r.db)
+	if err != nil {
+		log.Printf("action=repository.rds.Users, status=error: %v", err)
+		return nil, err
+	}
+
+	return users, nil
 }

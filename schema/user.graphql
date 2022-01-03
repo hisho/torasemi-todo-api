@@ -18,9 +18,14 @@ input DeleteUserInput {
     id: ID!
 }
 
+input UserFilter {
+    name: String
+}
+
 extend type Query {
     allUsers: [User]!
     user(id: ID!): User!
+    users(filter: UserFilter): [User]!
 }
 
 extend type Mutation {

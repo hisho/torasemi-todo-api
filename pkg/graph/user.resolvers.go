@@ -67,3 +67,19 @@ func (r *queryResolver) User(ctx context.Context, id int) (*model.User, error) {
 
 	return &model.User{User: user}, err
 }
+
+func (r *queryResolver) Users(ctx context.Context, filter *model.UserFilter) ([]*model.User, error) {
+	log.Print("action=graph.Users, status=status")
+	data, err := r.repo.Users(ctx, filter)
+	if err != nil {
+		log.Printf("action=graph.Users, status=error: %v", err)
+		return nil, err
+	}
+
+	var users []*model.User
+	for _, d := range data {
+		users = append(users, &model.User{User: d})
+	}
+
+	return users, nil
+}

@@ -30,3 +30,7 @@ type UpdateUserInput struct {
 	ID   int    `json:"id"`
 	Name string `json:"name"`
 }
+
+type UserFilter struct {
+	Name *string `json:"name"`
+}
