@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"time"
 
@@ -108,4 +109,31 @@ func (r Repository) DeleteTodo(ctx context.Context, input *model.DeleteTodoInput
 	tx.Commit()
 
 	return todo, nil
+}
+
+func (r Repository) Todos(ctx context.Context, filter *model.TodoFilter) (rds.TodoSlice, error) {
+	log.Print("action=repository.Todos, status=start")
+	var mods []qm.QueryMod
+
+	if filter != nil && filter.Todo != nil {
+		clause := fmt.Sprintf("%s LIKE ?", rds.TodoColumns.Todo)
+		args := "%" + *filter.Todo + "%"
+		mods = append(mods, qm.Where(clause, args))
+	}
+
+	if filter != nil && filter.Finished != nil {
+		mods = append(mods, rds.TodoWhere.Finished.EQ(*filter.Finished))
+	}
+
+	if filter != nil && filter.UserID != nil {
+		mods = append(mods, rds.TodoWhere.UserID.EQ(*filter.UserID))
+	}
+
+	todos, err := rds.Todos(mods...).All(ctx, r.db)
+	if err != nil {
+		log.Printf("action=repository.rds.Todos, status=error: %v", err)
+		return nil, err
+	}
+
+	return todos, nil
 }
