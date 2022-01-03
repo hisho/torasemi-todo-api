@@ -8,3 +8,12 @@ type User {
 input CreateUserInput {
     name: String!
 }
+
+input UpdateUserInput {
+    id: ID!
+    name: String!
+}
+
+input DeleteUserInput {
+    id: ID!
+}
