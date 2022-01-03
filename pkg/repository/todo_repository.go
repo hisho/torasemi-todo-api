@@ -83,3 +83,29 @@ func (r Repository) UpdateTodo(ctx context.Context, input *model.UpdateTodoInput
 
 	return todo, nil
 }
+
+func (r Repository) DeleteTodo(ctx context.Context, input *model.DeleteTodoInput) (*rds.Todo, error) {
+	log.Print("action=repository.DeleteTodo, status=start")
+	tx, err := r.db.BeginTx(ctx, nil)
+	if err != nil {
+		log.Printf("action=repository.r.db.BeginTx, status=error: %v", err)
+		return nil, err
+	}
+
+	todo, err := rds.FindTodo(ctx, r.db, input.ID)
+	if err != nil {
+		log.Printf("action=repository.rds.FindTodo, status=error: %v", err)
+		tx.Rollback()
+		return nil, err
+	}
+
+	if _, err := todo.Delete(ctx, r.db); err != nil {
+		log.Printf("action=repository.todo.Delete, status=error: %v", err)
+		tx.Rollback()
+		return nil, err
+	}
+
+	tx.Commit()
+
+	return todo, nil
+}

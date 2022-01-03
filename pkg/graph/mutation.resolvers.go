@@ -5,7 +5,6 @@ package graph
 
 import (
 	"context"
-	"fmt"
 	"log"
 
 	"github.com/y-mabuchi/torasemi-todo-api/pkg/graph/generated"
@@ -67,7 +66,14 @@ func (r *mutationResolver) UpdateTodo(ctx context.Context, input *model.UpdateTo
 }
 
 func (r *mutationResolver) DeleteTodo(ctx context.Context, input *model.DeleteTodoInput) (*model.Todo, error) {
-	panic(fmt.Errorf("not implemented"))
+	log.Print("action=graph.DeleteTodo, status=start")
+	todo, err := r.repo.DeleteTodo(ctx, input)
+	if err != nil {
+		log.Printf("action=graph.r.repo.DeleteTodo, status=error: %v", err)
+		return nil, err
+	}
+
+	return &model.Todo{Todo: todo}, nil
 }
 
 // Mutation returns generated.MutationResolver implementation.
