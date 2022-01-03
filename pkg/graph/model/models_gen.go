@@ -19,6 +19,12 @@ type DeleteUserInput struct {
 	ID int `json:"id"`
 }
 
+type TodoFilter struct {
+	Todo     *string `json:"todo"`
+	Finished *bool   `json:"finished"`
+	UserID   *int    `json:"userId"`
+}
+
 type UpdateTodoInput struct {
 	ID       int    `json:"id"`
 	Todo     string `json:"todo"`

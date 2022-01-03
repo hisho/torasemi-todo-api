@@ -67,6 +67,24 @@ func (r *queryResolver) Todo(ctx context.Context, id int) (*model.Todo, error) {
 	return &model.Todo{Todo: todo}, nil
 }
 
+func (r *queryResolver) Todos(ctx context.Context, filter *model.TodoFilter) ([]*model.Todo, error) {
+	log.Print("action=graph.Todos, status=start")
+	data, err := r.repo.Todos(ctx, filter)
+	if err != nil {
+		log.Printf("action=graph.Todos, status=error: %v", err)
+		return nil, err
+	}
+
+	var todos []*model.Todo
+	for _, d := range data {
+		todos = append(todos, &model.Todo{
+			Todo: d,
+		})
+	}
+
+	return todos, nil
+}
+
 func (r *todoResolver) Todo(ctx context.Context, obj *model.Todo) (string, error) {
 	return obj.Todo.Todo, nil
 }

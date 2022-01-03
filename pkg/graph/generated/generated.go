@@ -58,6 +58,7 @@ type ComplexityRoot struct {
 		AllTodos func(childComplexity int) int
 		AllUsers func(childComplexity int) int
 		Todo     func(childComplexity int, id int) int
+		Todos    func(childComplexity int, filter *model.TodoFilter) int
 		User     func(childComplexity int, id int) int
 		Users    func(childComplexity int, filter *model.UserFilter) int
 	}
@@ -90,6 +91,7 @@ type MutationResolver interface {
 type QueryResolver interface {
 	AllTodos(ctx context.Context) ([]*model.Todo, error)
 	Todo(ctx context.Context, id int) (*model.Todo, error)
+	Todos(ctx context.Context, filter *model.TodoFilter) ([]*model.Todo, error)
 	AllUsers(ctx context.Context) ([]*model.User, error)
 	User(ctx context.Context, id int) (*model.User, error)
 	Users(ctx context.Context, filter *model.UserFilter) ([]*model.User, error)
@@ -210,6 +212,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.Todo(childComplexity, args["id"].(int)), true
+
+	case "Query.todos":
+		if e.complexity.Query.Todos == nil {
+			break
+		}
+
+		args, err := ec.field_Query_todos_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.Todos(childComplexity, args["filter"].(*model.TodoFilter)), true
 
 	case "Query.user":
 		if e.complexity.Query.User == nil {
@@ -398,9 +412,16 @@ input DeleteTodoInput {
     id: ID!
 }
 
+input TodoFilter {
+    todo: String
+    finished: Boolean
+    userId: ID
+}
+
 extend type Query {
     allTodos: [Todo]!
     todo(id: ID!): Todo!
+    todos(filter: TodoFilter): [Todo]!
 }
 
 extend type Mutation {
@@ -569,6 +590,21 @@ func (ec *executionContext) field_Query_todo_args(ctx context.Context, rawArgs m
 		}
 	}
 	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_todos_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *model.TodoFilter
+	if tmp, ok := rawArgs["filter"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("filter"))
+		arg0, err = ec.unmarshalOTodoFilter2ᚖgithubᚗcomᚋyᚑmabuchiᚋtorasemiᚑtodoᚑapiᚋpkgᚋgraphᚋmodelᚐTodoFilter(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["filter"] = arg0
 	return args, nil
 }
 
@@ -967,6 +1003,48 @@ func (ec *executionContext) _Query_todo(ctx context.Context, field graphql.Colle
 	res := resTmp.(*model.Todo)
 	fc.Result = res
 	return ec.marshalNTodo2ᚖgithubᚗcomᚋyᚑmabuchiᚋtorasemiᚑtodoᚑapiᚋpkgᚋgraphᚋmodelᚐTodo(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query_todos(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_todos_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().Todos(rctx, args["filter"].(*model.TodoFilter))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.Todo)
+	fc.Result = res
+	return ec.marshalNTodo2ᚕᚖgithubᚗcomᚋyᚑmabuchiᚋtorasemiᚑtodoᚑapiᚋpkgᚋgraphᚋmodelᚐTodo(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_allUsers(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -2731,6 +2809,45 @@ func (ec *executionContext) unmarshalInputDeleteUserInput(ctx context.Context, o
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputTodoFilter(ctx context.Context, obj interface{}) (model.TodoFilter, error) {
+	var it model.TodoFilter
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	for k, v := range asMap {
+		switch k {
+		case "todo":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("todo"))
+			it.Todo, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "finished":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("finished"))
+			it.Finished, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "userId":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
+			it.UserID, err = ec.unmarshalOID2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputUpdateTodoInput(ctx context.Context, obj interface{}) (model.UpdateTodoInput, error) {
 	var it model.UpdateTodoInput
 	asMap := map[string]interface{}{}
@@ -2934,6 +3051,20 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_todo(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
+		case "todos":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_todos(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -3826,6 +3957,21 @@ func (ec *executionContext) unmarshalODeleteUserInput2ᚖgithubᚗcomᚋyᚑmabu
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
+func (ec *executionContext) unmarshalOID2ᚖint(ctx context.Context, v interface{}) (*int, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := graphql.UnmarshalInt(v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOID2ᚖint(ctx context.Context, sel ast.SelectionSet, v *int) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return graphql.MarshalInt(*v)
+}
+
 func (ec *executionContext) unmarshalOString2string(ctx context.Context, v interface{}) (string, error) {
 	res, err := graphql.UnmarshalString(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -3855,6 +4001,14 @@ func (ec *executionContext) marshalOTodo2ᚖgithubᚗcomᚋyᚑmabuchiᚋtorasem
 		return graphql.Null
 	}
 	return ec._Todo(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOTodoFilter2ᚖgithubᚗcomᚋyᚑmabuchiᚋtorasemiᚑtodoᚑapiᚋpkgᚋgraphᚋmodelᚐTodoFilter(ctx context.Context, v interface{}) (*model.TodoFilter, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputTodoFilter(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) unmarshalOUpdateTodoInput2ᚖgithubᚗcomᚋyᚑmabuchiᚋtorasemiᚑtodoᚑapiᚋpkgᚋgraphᚋmodelᚐUpdateTodoInput(ctx context.Context, v interface{}) (*model.UpdateTodoInput, error) {

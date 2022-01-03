@@ -23,9 +23,16 @@ input DeleteTodoInput {
     id: ID!
 }
 
+input TodoFilter {
+    todo: String
+    finished: Boolean
+    userId: ID
+}
+
 extend type Query {
     allTodos: [Todo]!
     todo(id: ID!): Todo!
+    todos(filter: TodoFilter): [Todo]!
 }
 
 extend type Mutation {
