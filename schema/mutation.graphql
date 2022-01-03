@@ -1,4 +1,8 @@
 type Mutation {
     # users
     createUser(input: CreateUserInput): User!
+    updateUser(input: UpdateUserInput): User!
+
+    # todos
+    createTodo(input: CreateTodoInput): Todo!
 }

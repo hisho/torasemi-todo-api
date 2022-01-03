@@ -16,4 +16,5 @@ require (
 	github.com/volatiletech/strmangle v0.0.1
 	go.uber.org/atomic v1.9.0 // indirect
 	golang.org/x/sys v0.0.0-20211216021012-1d35b9e2eb4e // indirect
+	golang.org/x/tools v0.1.8 // indirect
 )

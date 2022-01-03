@@ -6,3 +6,8 @@ type Todo {
     createdAt: Time!
     updatedAt: Time!
 }
+
+input CreateTodoInput {
+    todo: String!
+    userId: ID!
+}

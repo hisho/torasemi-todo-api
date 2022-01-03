@@ -2,6 +2,16 @@
 
 package model
 
+type CreateTodoInput struct {
+	Todo   string `json:"todo"`
+	UserID int    `json:"userId"`
+}
+
 type CreateUserInput struct {
+	Name string `json:"name"`
+}
+
+type UpdateUserInput struct {
+	ID   int    `json:"id"`
 	Name string `json:"name"`
 }
