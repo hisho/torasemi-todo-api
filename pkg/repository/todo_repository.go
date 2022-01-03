@@ -52,3 +52,34 @@ func (r Repository) CreateTodo(ctx context.Context, input *model.CreateTodoInput
 
 	return todo, nil
 }
+
+func (r Repository) UpdateTodo(ctx context.Context, input *model.UpdateTodoInput) (*rds.Todo, error) {
+	log.Print("action=repository.UpdateTodo, status=start")
+	tx, err := r.db.BeginTx(ctx, nil)
+	if err != nil {
+		log.Printf("action=repository.r.db.BeginTx, status=error: %v", err)
+		return nil, err
+	}
+
+	todo, err := rds.FindTodo(ctx, r.db, input.ID)
+	if err != nil {
+		log.Printf("action=repository.UpdateTodo, status=error: %v", err)
+		tx.Rollback()
+		return nil, err
+	}
+
+	todo.Todo = input.Todo
+	todo.Finished = input.Finished
+	todo.UserID = input.UserID
+	todo.UpdatedAt = time.Now()
+
+	if _, err := todo.Update(ctx, r.db, boil.Infer()); err != nil {
+		log.Printf("action=repository.todo.Update, status=error: %v", err)
+		tx.Rollback()
+		return nil, err
+	}
+
+	tx.Commit()
+
+	return todo, nil
+}

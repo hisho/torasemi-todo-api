@@ -6,4 +6,6 @@ type Mutation {
 
     # todos
     createTodo(input: CreateTodoInput): Todo!
+    updateTodo(input: UpdateTodoInput): Todo!
+    deleteTodo(input: DeleteTodoInput): Todo!
 }

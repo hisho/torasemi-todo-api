@@ -11,8 +11,19 @@ type CreateUserInput struct {
 	Name string `json:"name"`
 }
 
+type DeleteTodoInput struct {
+	ID int `json:"id"`
+}
+
 type DeleteUserInput struct {
 	ID int `json:"id"`
+}
+
+type UpdateTodoInput struct {
+	ID       int    `json:"id"`
+	Todo     string `json:"todo"`
+	Finished bool   `json:"finished"`
+	UserID   int    `json:"userId"`
 }
 
 type UpdateUserInput struct {

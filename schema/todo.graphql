@@ -11,3 +11,14 @@ input CreateTodoInput {
     todo: String!
     userId: ID!
 }
+
+input UpdateTodoInput {
+    id: ID!
+    todo: String!
+    finished: Boolean!
+    userId: ID!
+}
+
+input DeleteTodoInput {
+    id: ID!
+}
