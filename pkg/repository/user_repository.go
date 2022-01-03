@@ -79,3 +79,30 @@ func (r Repository) UpdateUser(ctx context.Context, input *model.UpdateUserInput
 
 	return user, nil
 }
+
+func (r Repository) DeleteUser(ctx context.Context, input *model.DeleteUserInput) (*rds.User, error) {
+	log.Print("action=repository.DeleteUser, status=start")
+	tx, err := r.db.BeginTx(ctx, nil)
+	if err != nil {
+		log.Printf("action=repository.r.db.BeginTx, status=error: %v", err)
+		return nil, err
+	}
+
+	user, err := rds.FindUser(ctx, r.db, input.ID)
+	if err != nil {
+		log.Printf("action=repository.rds.FindUser, status=error: %v", err)
+		tx.Rollback()
+		return nil, err
+	}
+
+	_, err = user.Delete(ctx, r.db)
+	if err != nil {
+		log.Printf("action=repository.user.Delete, status=error: %v", err)
+		tx.Rollback()
+		return nil, err
+	}
+
+	tx.Commit()
+
+	return user, nil
+}

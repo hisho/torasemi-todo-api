@@ -13,3 +13,7 @@ input UpdateUserInput {
     id: ID!
     name: String!
 }
+
+input DeleteUserInput {
+    id: ID!
+}

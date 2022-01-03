@@ -11,6 +11,10 @@ type CreateUserInput struct {
 	Name string `json:"name"`
 }
 
+type DeleteUserInput struct {
+	ID int `json:"id"`
+}
+
 type UpdateUserInput struct {
 	ID   int    `json:"id"`
 	Name string `json:"name"`

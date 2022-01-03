@@ -33,6 +33,17 @@ func (r *mutationResolver) UpdateUser(ctx context.Context, input *model.UpdateUs
 	return &model.User{User: user}, nil
 }
 
+func (r *mutationResolver) DeleteUser(ctx context.Context, input *model.DeleteUserInput) (*model.User, error) {
+	log.Print("action=graph.DeleteUser, status=start")
+	user, err := r.repo.DeleteUser(ctx, input)
+	if err != nil {
+		log.Printf("action=graph.r.repo.DeleteUser, status=error: %v", err)
+		return nil, err
+	}
+
+	return &model.User{User: user}, nil
+}
+
 func (r *mutationResolver) CreateTodo(ctx context.Context, input *model.CreateTodoInput) (*model.Todo, error) {
 	todo, err := r.repo.CreateTodo(ctx, input)
 	if err != nil {
