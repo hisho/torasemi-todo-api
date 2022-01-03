@@ -7,7 +7,6 @@ import (
 	"context"
 	"log"
 
-	"github.com/y-mabuchi/torasemi-todo-api/pkg/graph/generated"
 	"github.com/y-mabuchi/torasemi-todo-api/pkg/graph/model"
 )
 
@@ -44,39 +43,27 @@ func (r *mutationResolver) DeleteUser(ctx context.Context, input *model.DeleteUs
 	return &model.User{User: user}, nil
 }
 
-func (r *mutationResolver) CreateTodo(ctx context.Context, input *model.CreateTodoInput) (*model.Todo, error) {
-	todo, err := r.repo.CreateTodo(ctx, input)
+func (r *queryResolver) AllUsers(ctx context.Context) ([]*model.User, error) {
+	data, err := r.repo.AllUsers(ctx)
 	if err != nil {
-		log.Printf("action=graph.CreateTodo, status=error: %v", err)
+		log.Printf("action=r.repo.AllUsers, status=error: %v", err)
 		return nil, err
 	}
 
-	return &model.Todo{Todo: todo}, nil
+	var users []*model.User
+	for _, d := range data {
+		users = append(users, &model.User{User: d})
+	}
+
+	return users, nil
 }
 
-func (r *mutationResolver) UpdateTodo(ctx context.Context, input *model.UpdateTodoInput) (*model.Todo, error) {
-	log.Print("action=graph.UpdateTodo, status=start")
-	todo, err := r.repo.UpdateTodo(ctx, input)
+func (r *queryResolver) User(ctx context.Context, id int) (*model.User, error) {
+	user, err := r.repo.User(ctx, id)
 	if err != nil {
-		log.Printf("action=graph.r.repo.UpdateTodo, status=error: %v", err)
+		log.Printf("action=r.repo.User, status=error: %v", err)
 		return nil, err
 	}
 
-	return &model.Todo{Todo: todo}, nil
+	return &model.User{User: user}, err
 }
-
-func (r *mutationResolver) DeleteTodo(ctx context.Context, input *model.DeleteTodoInput) (*model.Todo, error) {
-	log.Print("action=graph.DeleteTodo, status=start")
-	todo, err := r.repo.DeleteTodo(ctx, input)
-	if err != nil {
-		log.Printf("action=graph.r.repo.DeleteTodo, status=error: %v", err)
-		return nil, err
-	}
-
-	return &model.Todo{Todo: todo}, nil
-}
-
-// Mutation returns generated.MutationResolver implementation.
-func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
-
-type mutationResolver struct{ *Resolver }

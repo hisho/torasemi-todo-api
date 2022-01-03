@@ -1,9 +1,0 @@
-type Query {
-    # users
-    allUsers: [User]!
-    user(id: ID!): User!
-
-    # todos
-    allTodos: [Todo]!
-    todo(id: ID!): Todo!
-}

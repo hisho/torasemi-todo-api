@@ -17,3 +17,14 @@ input UpdateUserInput {
 input DeleteUserInput {
     id: ID!
 }
+
+extend type Query {
+    allUsers: [User]!
+    user(id: ID!): User!
+}
+
+extend type Mutation {
+    createUser(input: CreateUserInput): User!
+    updateUser(input: UpdateUserInput): User!
+    deleteUser(input: DeleteUserInput): User!
+}

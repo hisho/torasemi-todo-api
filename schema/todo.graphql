@@ -22,3 +22,14 @@ input UpdateTodoInput {
 input DeleteTodoInput {
     id: ID!
 }
+
+extend type Query {
+    allTodos: [Todo]!
+    todo(id: ID!): Todo!
+}
+
+extend type Mutation {
+    createTodo(input: CreateTodoInput): Todo!
+    updateTodo(input: UpdateTodoInput): Todo!
+    deleteTodo(input: DeleteTodoInput): Todo!
+}
